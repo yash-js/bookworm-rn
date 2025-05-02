@@ -111,7 +111,7 @@ router.delete("/:id", protectRoute, async (req, res) => {
       }
     }
 
-    await book.remove();
+    await book.deleteOne();
     res.json({ message: "Book deleted successfully" });
   } catch (error) {
     console.error("Error deleting book:", error);
