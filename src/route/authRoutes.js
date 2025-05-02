@@ -46,6 +46,7 @@ router.post("/register", async (req, res) => {
       profileImage: avatar,
     });
 
+    await user.save();
     const token = generateToken(user?._id);
 
     res.json({
