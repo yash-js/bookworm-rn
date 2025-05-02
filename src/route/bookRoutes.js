@@ -47,6 +47,29 @@ router.get("/", protectRoute, async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
+    const books = await Book.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .populate("user", "username profileImage");
+
+    const totalBooks = await Book.countDocuments();
+    res.send({
+      books,
+      currentPage: page,
+      totalBooks,
+      totalPages: Math.ceil(totalBooks / limit),
+    });
+  } catch (error) {
+    console.error("Error fetching books:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+router.get("/user", protectRoute, async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
     const books = await Book.find({ user: req.user._id })
       .sort({ createdAt: -1 })
       .skip(skip)
